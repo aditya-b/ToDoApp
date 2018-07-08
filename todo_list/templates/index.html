@@ -1,0 +1,118 @@
+<html>
+    <head>
+        <title>Assista</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <style>
+            .list
+            {
+                width:200px;
+                height:200px;
+                padding:20px;
+                color:white;
+                font-family: cursive;
+                transition: 1s ease;
+                position: relative;
+                border-radius: 20px;
+                margin:10px;
+                display:inline-table;
+            }
+            .tasks
+            {
+                position: absolute;
+                top:0%;
+                left:0%;
+                width:200px;
+                height:200px;
+                padding:20px;
+                background-color: firebrick;
+                border-radius:15px;
+            }
+            .heading
+            {
+                font-family: cursive;
+                font-size: 20px;
+                padding: 5px;
+                width:150px;
+                overflow:hidden;
+            }
+            .list:hover .tasks
+            {
+                opacity:0.3;
+                transition: 0.5s ease;
+            }
+            .listviewbutton
+            {
+                display: none;
+                position: absolute;
+                top:40%;
+                left:25%;
+                padding:15px;
+                text-decoration:none;
+                border-radius: 20px;
+                cursor: pointer;
+                color:white;
+            }
+            .list:hover .listviewbutton
+            {
+                display: block;
+                opacity: 1;
+                transition: 0.5s ease;
+                text-decoration:none;
+                color:white;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <h3 style="display:inline-table;color:white;margin-left:20px">Assista</h3>
+        <form action="{% url 'todolist:logout' %}" method="post" style="display:inline-table;float:right;margin:20px;">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger" value="Logout">
+            </form>
+    </div>
+    <div class="container" style="margin-top:80px">
+    <div class="col-md-3"></div>
+    <div class="col-md-7">
+            {% if not lists %}
+                <center><h2 style="color:red;">Oops! No lists found! :( :(</h2></center>
+            {% endif %}
+            {% for list in lists %}
+                <div class="list">
+                    <div class='tasks' style="background-color:{{list.color}};box-shadow:3px 3px 7px {{list.color}}" id="{{list.id}}">
+                        <center><div class="heading"><p style="width:150px;"><b>{{list.name|truncatechars:10}}</b></p></div>
+                            <h3>
+                                {% if tasks|look:list.id == -1 %}
+                                    -
+                                {% else %}
+                                    {{ tasks|look:list.id }}
+                                {% endif %}
+                            </h3>
+                            <h2 style="transform:rotate(90deg);font-family:arial;background-color:white;color:{{list.color}};border-radius:50%;width:55px;height:55px;padding:8px;">
+                                {% if tasks|look:list.id >= 80 %}
+                                    :)
+                                {% elif tasks|look:list.id < 80 and tasks|look:list.id >= 50 %}
+                                    :|
+                                {% elif tasks|look:list.id == -1 %}
+                                    :o
+                                {% else %}
+                                    :(
+                                {% endif %}
+                            </h2></center>
+                     </div>
+                    <a class='listviewbutton' href="{{list.id}}/tasks/" style="background-color:{{list.color}};"><b>View Tasks</b></a>
+                </div>
+            {% endfor %}
+            <div class="list">
+                    <div class='tasks' style="background-color:#00796B;box-shadow:3px 3px 7px #00796B">
+                        <center>
+                            <span style="font-size:100px">+</span>
+                        </center>
+                     </div>
+                    <a class='listviewbutton' href="add/" style="background-color:#00796B;"><b>Add  List</b></a>
+                </div>
+        </div>
+    <div class="col-md-2"></div>
+    </div>
+    </body>
+</html>
